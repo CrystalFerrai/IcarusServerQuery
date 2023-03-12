@@ -15,9 +15,30 @@ Open a command prompt (cmd) wherever you downloaded IcarusServerQuery and run th
 IcarusServerQuery YourServerIP:YourServerQueryPort
 ```
 
-For example:
+Example input:
 ```
 IcarusServerQuery 192.168.1.50:27015
+```
+
+Example output:
+```
+Server: SomeTestServer
+Ping: 0.14ms
+Version: 1.2.41.108522
+QueryPort: 27015
+Port: 17777
+Status: Open World
+Prospect: OpenWorld_Styx
+Save: Test
+Difficulty: Medium
+Hard Core: No
+
+Associated characters: 2
+  CRYSTAL
+  SARA
+
+Online Players: 1/8
+  CRYSTAL - 01:07:58
 ```
 
 ## How to Build
