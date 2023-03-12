@@ -1,0 +1,3 @@
+[submodule "SteamQuery"]
+	path = SteamQuery
+	url = https://github.com/CrystalFerrai/SteamQuery.git
