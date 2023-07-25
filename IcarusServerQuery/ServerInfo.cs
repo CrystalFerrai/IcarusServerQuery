@@ -29,6 +29,8 @@ namespace IcarusServerQuery
         private ServerPlayersData? mServerPlayers;
         private float mPingMs;
 
+        private bool mErrorOccured;
+
         /// <summary>
         /// The name of the server
         /// </summary>
@@ -89,7 +91,7 @@ namespace IcarusServerQuery
         public static ServerInfo QueryServer(EndPointAddress server, TextWriter errorWriter)
         {
             ServerInfo info = new ServerInfo(server, errorWriter);
-            info.DoQueries();
+			info.DoQueries();
             info.ParseResults();
             return info;
         }
@@ -100,6 +102,11 @@ namespace IcarusServerQuery
         /// <param name="writer">The writer to print to</param>
         public void Print(TextWriter writer)
 		{
+            if (mErrorOccured)
+            {
+                return;
+            }
+
             writer.WriteLine($"Server: {ServerName}");
             writer.WriteLine($"Ping: {PingMs:0.0#}ms");
             writer.WriteLine($"Version: {GameVersion}");
@@ -135,7 +142,7 @@ namespace IcarusServerQuery
                     writer.WriteLine($"Hard Core: {(ProspectInfo.Value.NoRespawns ? "Yes" : "No")}");
 
                     writer.WriteLine();
-                    writer.WriteLine($"Associated characters: {ProspectInfo.Value.AssociatedMembers.Length}");
+                    writer.WriteLine($"Associated Characters: {ProspectInfo.Value.AssociatedMembers.Length}");
                     foreach (FAssociatedMemberInfo player in ProspectInfo.Value.AssociatedMembers)
 					{
                         writer.WriteLine($"  {player.CharacterName}");
@@ -155,6 +162,8 @@ namespace IcarusServerQuery
 
         private void DoQueries()
         {
+            mErrorOccured = false;
+
             ServerInfoQuery infoQuery = new ServerInfoQuery(mServer);
 
             WaitHandle[] waitHandles = new WaitHandle[3];
@@ -247,10 +256,12 @@ namespace IcarusServerQuery
             {
                 case ServerQueryResult.QueryTimedOut:
                     mErrorWriter.WriteLine("Query timed out.");
+                    mErrorOccured = true;
                     break;
                 case ServerQueryResult.UnknownResponseReceived:
                     mErrorWriter.WriteLine("Query returned an unrecognized response.");
-                    break;
+					mErrorOccured = true;
+					break;
                 case ServerQueryResult.ResponseReceived:
                     responseOutput = response.Data;
                     break;
